@@ -14,20 +14,17 @@ r = praw.Reddit(user_agent='brasniper')
 
 
 def findMatches(sizes):
-	submissions = r.get_subreddit('braswap').get_new(limit=10)
+	submissions = r.get_subreddit('braswap').get_new(limit=25)
 	links = []
 	for post in submissions:
 		title = vars(post)['title']
 		delimiters = " ", "/", ",", ".", "(", ")", "[", "]"
 	 	regexPattern = '|'.join(map(re.escape, delimiters))
 		words = re.split(regexPattern, title)
-		#print title
 		for bra in sizes:
 			if bra in words:
 				links.append(vars(post)['url'])
 	return links
-
-	#print [str(x) for x in submissions]
 
 def matchAll():
 	for user in db.users.find():
@@ -38,9 +35,8 @@ def matchAll():
 				sentList.append(link)
 			else:
 				matches.remove(link)
-		print matches
-		#TODO email str(matches)
-		message = sendgrid.Mail(to = user['email'], subject = 'Bras for sale!', text = str(matches) + '\nTo unsubscribe, go to www.brasniper.com/unsuscribe', from_email = 'aweaver2012@gmail.com')
+		#print matches
+		message = sendgrid.Mail(to = user['email'], subject = 'Bras in your size have been posted!', text = 'You can find bras in your size(s) here: \n\n' + str(matches) + '\n\nTo unsubscribe, go to www.brasniper.com/unsubscribe', from_email = 'bot@brasniper.com')
 		sg.send(message)
 		db.users.update({'_id': user['_id']}, {'$set': {'sent': sentList}})
 
@@ -68,9 +64,9 @@ matchAll()
 # 			105: 46
 # 		}[band]
 
-def getBand(size):
-	return int(re.match(r'\d+', size).group())
+# def getBand(size):
+# 	return int(re.match(r'\d+', size).group())
 
-def getCup(size):
-	band = int(re.match(r'\d+', size).group())
-	return size[len(band):]
+# def getCup(size):
+# 	band = int(re.match(r'\d+', size).group())
+# 	return size[len(band):]
