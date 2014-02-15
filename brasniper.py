@@ -2,12 +2,13 @@ import praw
 import re
 from pymongo import MongoClient
 import os
-from secrets import MONGO_USER, MONGO_PASS, MONGO_URL, MONGO_PORT
-
+from secrets import MONGO_USER, MONGO_PASS, MONGO_URL, MONGO_PORT, SENDGRID_USER, SENDGRID_PASS
+import sendgrid
 
 client = MongoClient(MONGO_URL, MONGO_PORT)
 client.BraSniper.authenticate(MONGO_USER, MONGO_PASS)
 db = client.BraSniper
+sg = sendgrid.SendGridClient(SENDGRID_USER, SENDGRID_PASS)
 
 r = praw.Reddit(user_agent='brasniper')
 
@@ -39,9 +40,12 @@ def matchAll():
 				matches.remove(link)
 		print matches
 		#TODO email str(matches)
+		message = sendgrid.Mail(to = user['email'], subject = 'Bras for sale!', text = str(matches) + '\nTo unsubscribe, go to www.brasniper.com/unsuscribe', from_email = 'aweaver2012@gmail.com')
+		sg.send(message)
 		db.users.update({'_id': user['_id']}, {'$set': {'sent': sentList}})
 
 matchAll()
+
 #print findMatches({"30G", "34G"})
 
 # def convert(size):
