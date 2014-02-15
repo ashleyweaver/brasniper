@@ -1,8 +1,12 @@
+{% extends "layout.html" %}
 {% from "_formhelpers.html" import render_field %}
+{% block body %}
+<h1>Sorry to see you go...</h1>
 <form method=post action="/unsubscribe">
   <dl>
     {{ render_field(form.email) }}
     {{ render_field(form.accept_unsubscribe) }}
   </dl>
-  <p><input type=submit value=Register>
+  <p><input type=submit value=Unsubscribe>
 </form>
+{% endblock %}

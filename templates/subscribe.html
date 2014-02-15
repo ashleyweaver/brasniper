@@ -1,8 +1,12 @@
+{% extends "layout.html" %}
 {% from "_formhelpers.html" import render_field %}
+{% block body %}
+<h1>Welcome to BraSniper!</h1>
 <form method=post action="/">
   <dl>
     {{ render_field(form.email) }}
     {{ render_field(form.sizes) }}
   </dl>
-  <p><input type=submit value=Register>
+  <p><input type=submit value=Subscribe>
 </form>
+{% endblock %}
